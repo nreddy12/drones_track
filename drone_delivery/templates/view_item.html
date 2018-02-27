@@ -1,0 +1,24 @@
+<ol class="progtrckr" data-progtrckr-steps="4">
+    <li class="progtrckr-{{track.0}}">Order Processing</li>
+    <li class="progtrckr-{{track.1}}">Packing Item</li>
+    <li class="progtrckr-{{track.2}}">Shipping Item</li>
+    <li class="progtrckr-{{track.3}}">Delivered</li>
+</ol> 
+<br><br>
+<table class="table table-hover"> 
+{% if items %}
+    <thead>
+        <th>Date Time</th>
+        <th>Order Tracking</th>
+        <th></th>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td>{{item.time_stamp}}</td>
+            <td>{{item.action}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>    
+{% endif %}
+</table>

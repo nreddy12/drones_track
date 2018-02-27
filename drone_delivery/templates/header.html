@@ -1,0 +1,18 @@
+{% load staticfiles %}
+{% block extra_styles %}
+<script type="text/css">
+<style>
+</script>
+{% endblock %}
+<nav class="navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header" >
+            <a class="navbar-brand" style="font-size:24px;" href="{% url 'about' %}">ScripBox | Drones</a>
+        </div>
+        <ul class="nav navbar-inverse" style="font-size:14px;">
+            <li><a href="{% url 'view_items' %}">Items</a></li>
+            <li><a href="{% url 'view_drones' %}">Drones</a></li>
+            <li><a href="{% url 'view_parking_slots' %}">Parking Spots</a></li>
+        </ul>
+    </div>
+</nav>

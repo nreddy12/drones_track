@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_styles %}
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript">
+</script>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Drones : &nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Parking Spot</th>
+                        <th>Parking Spot Status</th>
+                    </thead>
+                    <tbody>
+                    {% if drones %}
+                    {% for drone in drones %}
+                        <tr>
+                            <td>{{drone.name}}</td>
+                            <td>{{drone.status}}</td>
+                            <td>{{drone.parking_spot.slot_number}}</td>
+                            <td>{{drone.parking_spot.slot_status}}</td>
+                        </tr>
+                    {% endfor %}
+                    {% else %} 
+                        <tr><td><p>No drones avaialble for now.</p></td></tr>
+                    {% endif %}
+                    </tbody>
+                </table> 
+            </div>
+        </div>    
+    </div>
+    <br><br>
+</div>
+{% endblock %}

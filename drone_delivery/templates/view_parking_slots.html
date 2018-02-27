@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_styles %}
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript">
+</script>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Parking Spots : &nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <th>Slot Number</th>
+                        <th>Slot Status</th>
+                        <th>Slot Details</th>
+                    </thead>
+                    <tbody>
+                    {% if slots %}
+                    {% for slot in slots %}
+                        <tr>
+                            <td>{{slot.slot_number}}</td>
+                            <td>{{slot.slot_status}}</td>
+                            <td>{{slot.slot_details}}</td>
+                        </tr>
+                    {% endfor %}
+                    {% else %} 
+                        <tr><td><p>No slots are avaiable now.</p></td></tr>
+                    {% endif %}
+                    </tbody>
+                </table> 
+            </div>
+        </div>    
+    </div>
+    <br><br>
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_styles %}
+<style type="text/css">
+    ol.progtrckr {
+    margin: 0;
+    padding: 0;
+    list-style-type none;
+}
+
+ol.progtrckr li {
+    display: inline-block;
+    text-align: center;
+    line-height: 3.5em;
+}
+
+ol.progtrckr[data-progtrckr-steps="2"] li { width: 49%; }
+ol.progtrckr[data-progtrckr-steps="3"] li { width: 33%; }
+ol.progtrckr[data-progtrckr-steps="4"] li { width: 24%; }
+ol.progtrckr[data-progtrckr-steps="5"] li { width: 19%; }
+ol.progtrckr[data-progtrckr-steps="6"] li { width: 16%; }
+ol.progtrckr[data-progtrckr-steps="7"] li { width: 14%; }
+ol.progtrckr[data-progtrckr-steps="8"] li { width: 12%; }
+ol.progtrckr[data-progtrckr-steps="9"] li { width: 11%; }
+
+ol.progtrckr li.progtrckr-done {
+    color: black;
+    border-bottom: 4px solid yellowgreen;
+}
+ol.progtrckr li.progtrckr-todo {
+    color: silver; 
+    border-bottom: 4px solid silver;
+}
+
+ol.progtrckr li:after {
+    content: "\00a0\00a0";
+}
+ol.progtrckr li:before {
+    position: relative;
+    bottom: -2.5em;
+    float: left;
+    left: 50%;
+    line-height: 1em;
+}
+ol.progtrckr li.progtrckr-done:before {
+    content: "\2713";
+    color: white;
+    background-color: yellowgreen;
+    height: 2.2em;
+    width: 2.2em;
+    line-height: 2.2em;
+    border: none;
+    border-radius: 2.2em;
+}
+ol.progtrckr li.progtrckr-todo:before {
+    content: "\039F";
+    color: silver;
+    background-color: white;
+    font-size: 2.2em;
+    bottom: -1.2em;
+}
+</style>
+
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#success-alert").hide();
+        $("#danger-alert").hide();
+
+        $('#ord_status').val('{{order_filter}}');
+        $('#ord_status').change(function() {
+            $('#odr_form').submit();
+        });
+
+        $(".itm_dtls").click(function(){
+            var id = $(this).attr('id');
+            if ($('#'+id).text() == 'Deliver') {
+                var tr = $(this).closest("tr");
+                $(this).html('Delivering...');
+                $.ajax({
+                    url: "/items/deliver/"+id+"/",
+                    method: "GET",
+                    success: function(data){
+                        $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+                            $("#success-alert").slideUp(500);
+                        }); 
+                        tr.remove();
+                    },
+                    error: function(){
+                        $(this).html('Deliver');
+                        $("#danger-alert").fadeTo(2000, 500).slideUp(500, function(){
+                            $("#danger-alert").slideUp(500);
+                        });                        
+                    }
+                });                
+            } else {
+                $.ajax({
+                    url: "/items/"+id+"/",
+                    method: "GET",
+                    success: function(data){
+                        $("#item_details").html(data);
+                        $("#specfic_item").show();
+                    },
+                    error: function(){}
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <form action="#" method="post" id="odr_form">
+                {% csrf_token %}
+                <h4 class="panel-title">Items: &nbsp;&nbsp;&nbsp;
+                    <select id="ord_status" name="ord_status">
+                        <option value="ORDERED">Ordered</option>
+                        <option value="PACKED">Packed</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                    </select> </h4> &nbsp;&nbsp;&nbsp;
+                    <div class="alert alert-success" id="success-alert">
+                        <button type="button" class="close" data-dismiss="alert">x</button>
+                        <strong>Success! </strong>Item successfully delivered.                        
+                    </div> 
+                    <div class="alert alert-danger" id="danger-alert">
+                        <button type="button" class="close" data-dismiss="alert">x</button>
+                        <strong>Error! </strong>Something went wrong.
+                    </div>                                  
+                </form>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <th>Item Name</th>
+                        <th>Ordered Date</th>
+                        <th>Address</th>
+                        <th>Deliver Status</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                    {% if items %}
+                    {% for item in items %}
+                        <tr>
+                            <td>{{item.name.strip}}</td>
+                            <td>{{item.order_date}}</td>
+                            <td>{{item.address}}</td>
+                            <td>{{item.order_status}}</td>
+                            <td><a href="#" class="btn btn-primary itm_dtls" id="{{item.id}}">{{status}}</a></td>
+                        </tr>
+                    {% endfor %}
+                    {% else %} 
+                        <tr><td><p>No Items avaialble for this status.</p></td></tr>
+                    {% endif %}
+                    </tbody>
+                </table> 
+            </div>
+        </div>    
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-md-10" id="specfic_item" style="display:none;">
+            <div class="panel-body" id="item_details">
+            </div>
+        </div>        
+    </div>
+</div>
+{% endblock %}
